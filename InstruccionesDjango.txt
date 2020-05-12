@@ -1,0 +1,134 @@
+1. Revisar si está instalado python:
+	si $ python -V
+	>python 2.7.x
+	y $ python3 -V
+	>python 3.6.x
+		2. entonces: instala un virtual enviroment (ambiente virtual) en la carpeta utilizando "virtualenv"
+		3. $ virtualenv -p python3 . (usa esta instruccion con el punto si es el caso anterior)
+			al utilizar el punto ".", se le indica a virtualenv que la carpeta que contiene el ambiente virtual
+			es la carpeta actual.
+			Si se desea crear un nombre del ambiente virtual, se escribe: 
+			$  virtualenv <nombreAmbVirtual> -p python3 (por lo general el nombre es: venv)
+		4 $virtualenv . (Usa esta instruccion si al poner python -V te da resultado una version de python 3.
+
+5. entrar para trabajar en el ambiente virtual: $ source bin/activate
+						si se usa windows: $ .\Scripts\activate
+						si no lo permite, entrar al terminal como administrador y usar el siguiente comando:
+						$ Set-ExecutionPolicy Unrestricted -Force
+						despues volver a ejecutar la orden para activar
+		para desactivar el ambiente virtual: $ deactivate
+		Al hacer esto, se deben instalar las aplicaciones que se desean utilizar dentro del ambiente virtual.
+
+6. instalar django dentro del ambiente virtual: ve-$ pip install django
+										si se desea instalar una versión específica, se debe reemplazar:
+										django==<version>
+						Para seguir las instrucciones y el tutorial de youtube:
+						https://www.youtube.com/watch?v=F5mRW0jo-U4
+						de freecodecamp.org
+						utilizar versión 2.1.5 => $ pip install django==2.1.5
+						¡¡NO USAR 2.0.7 PUES TIENE UN BUG CON LA BASE DE DATOS!!
+
+7. Reconocer el software instalado en el pc o venv: ve-$ pip freeze
+					        >Django==2.1.5
+						>pkg-resources==0.0.0
+						>pytz==2020.1
+
+8. Entrar a Django: ve-$ django-admin
+	Aroojará una lista de subcomandos que se pueden realizar en django
+
+9. Cear un proyecto: ve-$ django-admin startproject <nombre-del-proyecto>
+	Esto creará un proyecto de django. Sin embrgo, el relator decide hacerlo por su cuenta:
+		Crea un directorioi src en el "ve" (virtual enviroment - ambiente virtual):
+		ve-$ mkdir src
+		posteriormente ingresa a este: ve-$ cd src
+		entonces, dentro de la carpeta src utiliza el comndo "startproject":
+		ve->src-$ django-admin startproject <nombre-del-proyecto> (en este caso, utilizó "trydjango")
+			en mi caso utilizaré "WebApp" como nombre de mi proyecto.
+		Una vez dentro de la carpeta, hay un archivo manage.py y una carpeta WebApp
+			Dentro de la carpeta WebApp que esta dentro de la carpeta de Proyecto homonima,
+			se encuentran los siguientes archivos:
+			__init__.py	settings.py	urls.py	wsgi.py 
+
+10. Correr servidor: Para poder correr el servidor, se le debe indicar a python (el que está instalado dentro del ve)
+que haga correr el servidor mediante el archivo: manage.py. Lo cual se hace con el comando:
+	ve>src>WebApp-$ python manage.py runserver
+		Esto empezará a correr un servidor en el pc; entregará una advertenciaque obviaremos inicialmente
+		Se entrega la información relativa lal servidor: en este caso, el servidor corre en:
+		http://127.0.0.1:8000/
+		Para apagar el servidor, se debe presionar ctrl+c en la linea de comandos
+
+11. Ingresar al servidor: entrar al navegar web en la pagina http://127.0.0.1:8000/ o bien
+localhost:8000
+	dentro se encuentra la pagina inicial de administrador de Django 2.1
+
+12. A partir de ahora el resto debe ser realizado en el editor de texto de preferencia
+(en mi caso, usaré Visual Studio Code)
+	guardar proyecto o workspace en la carpeta del proyecto dentro del editor de texto
+
+13.Settings: más expliaciones de settings.py en el video:  https://www.youtube.com/watch?v=F5mRW0jo-U4
+
+14. Base de datos: Para instalar la base de datos que viene por defecto (sqlite3)
+correr siguiente comando: 
+ve>...>MyApp-$ python manage.py migrate
+
+15. Admin: para ingresar a la pagina de admin, se debe ingresar en el navegador:
+localhost:800/admin
+	Esto entrará a una ventana de ingreso de sesión.
+16. Superusuario: Para crear el Super Usuario de django, se debe ingresar en la consola de comandos:
+ve>...>MyApp-$ python manage.py createsuperuser
+	>Username: <escribir nombre del superusuario>
+	>Email adress: <email que desea utilizar, si desea>
+	>Password: <contraseña, debe ser una contraseña segura si se usará para una web real>
+	>Password (again): <Repita la contraseña>
+	>Superuser created succesfully. (Ultima linea, indica que el superusuario se creo satisfactoriamente)
+
+17. Entrar al admin con el superusuario. Es util para gestionar las cuentas, pero 
+más adelante se verá qué hacer con esto.
+
+18. Crear app: Para crear una app, se debe escribir el comando, en la raiz (ve>...>WebApp-$, a partir de ahora ve~), donde se encuentra el archivo manage.py:
+ve~$ python manage.py startapp <nombreDeLaAplicación> (el nombre debe ser descriptivo)
+	en este caso se le llama "products" -> ve~$ python manage.py startapp products
+	De inmediato, se crea un directorio nuevo en la carpeta actual con el nombre de la app
+	Dentro del directorio existen los siguientes archivos:
+	__init__.py admin.py apps.py models.py tests.py views.py migrations/
+		dentro de migrations: __init__.py
+
+19. Para crear modelos en la app: Ingresar al archivo models.py dentro de la carpeta de la app
+	dentro, crear una clase en python y añadirle los atributos que se consideren necesarios:
+		from django.db import models
+		
+		# Create your models here
+		class Product(model.Model): #Clase default de django
+			title		= models.TextField() #tipo de dato, de texto
+			description	= models.TextField() #se usa este tipo como ejemplo
+			price		= models.textField()
+
+20. Añadir app en settings: dentro del archivo settings.py ubicado en la carpeta homonima al proyecto
+en la lista INSTALLED_APPS añadir: '<nombre-de-la-app>', (en este caso: 'products') seguido de una coma.
+
+21. Preparar y añadir productos a la base de datos
+	escribir el comando para preparar: ve~$ python manage.py makemigrations
+		deberia responder que se crearan las migraciones para la nueva app
+	escribir el comando para migrar a la base de datos: ve~$ python manage.py migrate
+		muestra las operaciones que se realizarán y posteriormente las migraciones que se correran (nuevas, en este caso, solo 'products')
+	Ambos comandos se deben usar cada vez que realices cambios a models.py
+
+22. Hacer cambios a models.py: Si se desea añadir un nuevo campo o atributo a la clase,
+se debe crear un valor por default; en caso de no hacerlo, manage.py solicitará cuando se ejecute el comando:
+ve~$ python manage.py makemigrations, que elija entre 1) hacer que django añada un valor por defecto NULL o 
+2) salir y permitir al usuario elegir un valor por defecto. Esto se raliza para evitar conflictos con la base de datos
+	En este caso, el tutor eligio 2 y volvió l archivo models.py donde añadio al argumento añadido, en este caso "summary" un defalt='this is cool'
+	quedando: 
+		summary = models.TextField(default = 'this is cool!')
+	una ves hecho esto, ya puede correr makemigrations y migrate sin problemas
+	lo cual añade la nueva clase a la base de datos
+
+23. Añadir app a la pagina admin de django: en la misma carpeta de models.py (products)
+importar la base de datos:
+	from .models import <nombre de la clase creada en models.py> (en este caso: Product)
+	admin.site.register(Product)
+
+24. Ingresar desde el admin de la pagina: entrar en el navegador en localhost:8000/admin y refrescar (el servidor debe estar encendido)
+	entonces se prodra ver la nueva base de datos y se podrán añadir productos con sus respectivos atributos.
+
+25. 
